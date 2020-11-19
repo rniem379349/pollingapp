@@ -1,0 +1,47 @@
+{% extends "polls/base.html" %}
+
+{% block content %}
+    <div class="py-2 has-text-centered">
+            <a href="{% url 'polls:detail' question.id %}" class="title">Results for "{{ question.question_text }}"</a>
+    </div>
+
+    <div class="box">
+        <ul>
+        {% for choice in question.choice_set.all %}
+        <div class="columns is-vcentered">
+            <div class="column is-4-tablet">
+                <li>
+                    <p class="has-text-dark">
+                        {{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}
+                    </p>
+                </li>
+            </div>
+            <div class="column is-8-tablet">
+                <div class="is-vcentered-mobile has-background-info my-2 pl-2 py-3" style="width: {{ choice.proportion_of_votes }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+        </ul>
+    
+        <h2 class="subtitle">Total votes: {{ question.total_votes }}</h2>
+    
+        <a class="button" href="{% url 'polls:detail' question.id %}">Back to question</a>
+        
+    </div>
+    
+    <section class="section">
+        <h1 class="subtitle my-2">Comments</h1>
+        {% if user.is_authenticated %}
+        <a class="button my-2" href="{% url 'polls:comment-create' question.id %}">Post a comment</a>
+        {% else %}
+            <p class="my-2">You need to be logged in to comment. <a class="has-color-link" href="{% url 'users:login'%}">Log in here.</a></p>
+        {% endif %}
+
+        {% for comment in comments %}
+        <div class="box">
+            <h2 class="is-size-6 has-text-weight-bold">{{ comment.user }}</h2>
+            <p>{{ comment.content }}</p>
+        </div>
+        {% endfor %}
+    </section>
+{% endblock content %}

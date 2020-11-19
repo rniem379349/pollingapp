@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/main.css' %}">
+    
+    {% if title %}
+        <title>AwsumPolls - {{ title }}</title>
+    {% else %}
+        <title>AwsumPolls</title>
+    {% endif %}
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar has-shadow is-white">
+            <!-- logo / brand stuff, using custom Bulma classes -->
+            <div class="navbar-brand">
+                <a href="{% url 'polls:index' %}" class="title navbar-item mb-0">
+                    AwsumPolls
+                </a>
+                <a class="navbar-burger" id="burger" style="height: 64px;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div>
+    
+            <div class="navbar-menu" id="nav-links">
+                <div class="navbar-end">
+                    {% if user.is_authenticated %}
+                        <div class="navbar-item">
+                            <a href="{% url 'polls:create-question' %}" class="button is-primary">New poll</a>
+                        </div>
+                        <a href="{% url 'users:user_profile' user.pk %}" class="navbar-item px-4">Profile</a>
+                        <a href="{% url 'users:logout' %}" class="navbar-item px-4">Logout</a>
+                    {% else %}
+                        <a href="{% url 'users:register' %}" class="navbar-item px-4">Register</a>
+                        <a href="{% url 'users:login' %}" class="navbar-item px-4">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container my-2">
+        {% if messages %}
+            {% for message in messages %}
+              <div class="notification is-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{% static 'polls/pollsMain.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+    <section class="section">
+        <h2 class="subtitle">You have been logged out.</h2>
+        <a href="{% url 'polls:index' %}">Back to Home Page</a>
+    </section>
+{% endblock content %}

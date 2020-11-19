@@ -1,0 +1,32 @@
+{% extends "polls/base.html" %}
+{% load myfilters %}
+
+{% block content %}
+
+    <section class="section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset="form-group">
+                <legend class='subtitle mb-4'>
+                    Post a comment
+                </legend>
+                <div class="field">
+                    <label class="label">Comment</label>
+                    <div class="control">
+                        {{ form.content }}
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <button class="button" type="submit">Post</button>
+            </div>
+        </form>
+
+        {% comment %} <div class="border-top pt-3">
+            <small class="text-muted">
+                <a class="ml-2" href="{% url 'polls:results' %}">Register</a>
+            </small>
+        </div> {% endcomment %}
+    </section>
+
+{% endblock content %}

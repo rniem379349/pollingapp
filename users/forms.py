@@ -1,0 +1,21 @@
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth import views as auth_views
+
+# Put all the forms which are to inherit from the main forms here.
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+
+class UserUpdateForm(UserChangeForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']

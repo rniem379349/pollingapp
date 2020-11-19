@@ -1,0 +1,50 @@
+{% extends "polls/base.html" %}
+{% load myfilters %}
+
+{% block content %}
+
+    <section class="section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset="form-group">
+                <legend class='subtitle mb-4'>
+                    Register
+                </legend>
+                <div class="field">
+                    <label class="label">Username</label>
+                    <div class="control">
+                        {{ form.username|setupinputfield:'Username' }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        {{ form.email|setupinputfield:'Email' }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        {{ form.password1|setupinputfield:'Password' }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Repeat Password</label>
+                    <div class="control">
+                        {{ form.password2|setupinputfield:'Repeat Password' }}
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <button class="button" type="submit">Register</button>
+            </div>
+        </form>
+
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Already have an account? <a class="ml-2" href="{% url 'users:login' %}">Sign in</a>
+            </small>
+        </div>
+    </section>
+
+{% endblock content %}
