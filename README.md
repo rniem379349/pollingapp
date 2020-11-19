@@ -17,5 +17,5 @@ To run this app, perform the following steps:
 
 ## Future Work
 Future updates are to follow. Currently in development:
-- Visual form for easy creation of new polls,
-- User profile picture upload and cropping.
+- User profile picture upload and cropping,
+- Further styling and animations.
