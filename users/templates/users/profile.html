@@ -16,7 +16,7 @@
     </section>
 
     <section class="section">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset="form-group">
                 <legend class='subtitle mb-4'>
@@ -25,13 +25,19 @@
                 <div class="field">
                     <label class="label">Username</label>
                     <div class="control">
-                        {{ form.username|setupinputfield:'Username' }}
+                        {{ user_form.username|setupinputfield:'Username' }}
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Email</label>
                     <div class="control">
-                        {{ form.email|setupinputfield:'Email' }}
+                        {{ user_form.email|setupinputfield:'Email' }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Profile Picture</label>
+                    <div class="control">
+                        {{ profile_form.profile_pic }}
                     </div>
                 </div>
             </fieldset>

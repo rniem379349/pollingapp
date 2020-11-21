@@ -52,12 +52,40 @@ class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
     second_form_class = ProfileUpdateForm
     template_name = 'users/profile.html'
 
+    def get_object(self, queryset=None):
+        return User.objects.get(pk=self.request.user.pk)
+
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)   
 
     def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        self.object = None
+        form = self.form_class(instance=self.get_object())
+        profile_form = ProfileUpdateForm(instance=self.get_object())
+
+        return self.render_to_response(
+            self.get_context_data(
+                user_form=form,
+                profile_form=profile_form,
+            )
+        )
     
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        print(request.FILES)
+        form = self.form_class(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        print('=================safaef=============')
+        print(profile_form)
+        print(profile_form.is_valid())
+        print(profile_form.errors)
+        print('=================safaef=============')
+        if form.is_valid() and profile_form.is_valid():
+            profile_form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Changes saved.')
@@ -66,6 +94,27 @@ class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
     def form_invalid(self, form):
         messages.info(self.request, 'Could not save changes. Please check that the fields are filled out correctly.')
         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
+
+
+# class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
+#     form_class = UserUpdateForm
+#     second_form_class = ProfileUpdateForm
+#     template_name = 'users/profile.html'
+
+#     def get_queryset(self):
+#         return User.objects.filter(pk=self.request.user.pk)   
+
+#     def get(self, request, *args, **kwargs):
+#         return super().get(request, *args, **kwargs)
+    
+#     def form_valid(self, form):
+#         form.save()
+#         messages.success(self.request, 'Changes saved.')
+#         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
+    
+#     def form_invalid(self, form):
+#         messages.info(self.request, 'Could not save changes. Please check that the fields are filled out correctly.')
+#         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
 
 
 class ProfileView(generic.ListView):
