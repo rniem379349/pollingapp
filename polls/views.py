@@ -2,22 +2,39 @@ import traceback
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.utils import timezone
 from django.forms.models import modelformset_factory
 
 from .models import Question, Choice, Comment
-from .forms import QuestionCreationForm, ChoiceCreationForm
+from .forms import QuestionCreationForm, QuestionEditForm, ChoiceCreationForm, ChoiceEditForm
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return context
+    
+    def get_question_indexes_odd_or_not(self, object_list):
+        """
+        Check if the question's index is odd, for styling odd and even questions with different colors
+        """
+        indexes = []
+        for index, item in enumerate(object_list):
+            indexes.append(index % 2 == 0)
+        return indexes
+
     def get_queryset(self):
-        return Question.objects.filter(pub_date__lte = timezone.now()).order_by('-pub_date')
+        qs = Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
+        indexes = self.get_question_indexes_odd_or_not(qs)
+        res = zip(qs, indexes)
+        return res
     
 class DetailView(generic.DetailView):
     model = Question
@@ -40,7 +57,7 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         form = self.get_form(form_class)
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         formset = ChoiceFormSet(queryset=Choice.objects.none())
-        # print(formset)
+
         return self.render_to_response(
             self.get_context_data(
                 form=form,
@@ -54,14 +71,8 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         POST variables and then checked for validity.
         """
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
-        # form_class = self.get_form_class()
         form = self.get_form()
-        # print(form)
-        # print("------")
         formset = ChoiceFormSet(self.request.POST)
-        # for form in formset:
-        #     print(form)
-        # print("------")
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
         else:
@@ -74,11 +85,9 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
                 messages.info(self.request, 'Please provide at least two choices.')
                 return HttpResponseRedirect(reverse('polls:create-question'))
 
-            q = Question.objects.create(question_text=form.cleaned_data['question_text'], pub_date=timezone.now())
+            q = Question.objects.create(question_text=form.cleaned_data['question_text'], pub_date=timezone.now(), user=self.request.user)
 
-            # print(formset.cleaned_data)
             for form in formset.cleaned_data:
-                # print(form.get('choice_text'))
                 if form.get('choice_text'):
                     Choice.objects.create(votes=0, question=q, choice_text=form['choice_text'])
         except Exception:
@@ -100,6 +109,90 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
             if filled_in_choices >= 2:
                 return False
         return True
+    
+
+class QuestionEditView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'polls/editquestion.html'
+    model = Question
+    form_class = QuestionEditForm
+
+    def get_object(self, queryset=None):
+        return Question.objects.filter(pk=self.kwargs.get('pk')).first()
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates a blank creation form for a question and its choices
+        """
+        self.object = None
+        form = QuestionEditForm(instance=self.get_object())
+        ChoiceFormSet = modelformset_factory(Choice, form=ChoiceEditForm, extra=10, max_num=10)
+        formset = ChoiceFormSet(queryset=Choice.objects.filter(question=self.kwargs.get('pk')))
+
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                formset=formset,
+            )
+        )
+
+    def post(self, request, *args, **kwargs):
+        ChoiceFormSet = modelformset_factory(Choice, form=ChoiceEditForm, extra=10, max_num=10)
+        form = self.get_form()
+        formset = ChoiceFormSet(self.request.POST)
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        else:
+            return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        question_id = self.kwargs.get('pk')
+        try:
+            # check if there are at least two choices
+            if QuestionCreateView().less_than_two_choices(formset):
+                messages.info(self.request, 'Please provide at least two choices.')
+                return HttpResponseRedirect(reverse('polls:index'))
+            obj = self.get_object()
+            obj.question_text = form.cleaned_data['question_text']
+            obj.save(update_fields=['question_text'])
+
+            for form in formset:
+                if form.cleaned_data.get('choice_text'):
+                    if form.cleaned_data.get('id'):
+                        if type(form.cleaned_data.get('id')) == Choice:
+                            form.save()
+                    else:
+                        Choice.objects.create(votes=0, question=self.get_object(), choice_text=form.cleaned_data['choice_text'])
+
+        except Exception:
+            traceback.print_exc()
+            messages.info(self.request, 'Could not update question.')
+            return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
+
+        messages.success(self.request, 'Question updated successfully!')
+        question_id = self.kwargs.get('pk')
+        return HttpResponseRedirect(reverse('polls:detail', args=(question_id,)))
+    
+    def form_invalid(self, form, formset):
+        question_id = self.kwargs.get('pk')
+        messages.info(self.request, 'Could not update question.')
+        return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
+
+
+class QuestionDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Question
+    success_url = reverse_lazy('polls:index')
+    success_message = 'Question deleted.'
+
+    def test_func(self):
+        """
+        function used by the UserPassesTestMixin. Checks if the user is authorized to delete the question
+        """
+        question = self.get_object()
+        return (self.request.user == question.user)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(QuestionDeleteView, self).delete(request, *args, **kwargs)
 
 
 class ResultsView(generic.DetailView):

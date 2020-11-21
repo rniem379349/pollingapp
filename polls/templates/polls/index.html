@@ -5,15 +5,17 @@
 
     <div class="columns is-3 is-multiline is-vcentered is-variable">
         {% if latest_question_list %}
-            {% for question in latest_question_list %}
-                {% if question.pk_is_odd %}
+            {% for question, index in latest_question_list %}
+                {% if index %}
                     <a class="column my-2 is-one-third has-text-centered has-background-light" href="{% url 'polls:detail' question.id %}">{{ question.short_string }}</a>
                 {% else %}
-                    <a class="column my-2 is-one-third has-text-centered has-background-white" href="{% url 'polls:detail' question.id %}">{{ question.short_string }}</a>
+                    <a class="column my-2 is-one-third has-text-centered has-background-grey-lighter" href="{% url 'polls:detail' question.id %}">{{ question.short_string }}</a>
                 {% endif %}
             {% endfor %}
         {% else %}
-            <p>No polls are available.</p>
+        <div class="column">
+            <p class="has-text-centered subtitle">No polls are available.</p>
+        </div>
         {% endif %}
     </div>
 {% endblock content %}

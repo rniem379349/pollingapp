@@ -10,7 +10,19 @@ class QuestionCreationForm(forms.ModelForm):
         fields = ['question_text']
 
 
+class QuestionEditForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['question_text']
+
+
 class ChoiceCreationForm(forms.ModelForm):
+    class Meta:
+        model = Choice
+        fields = ['choice_text']
+
+
+class ChoiceEditForm(forms.ModelForm):
     class Meta:
         model = Choice
         fields = ['choice_text']

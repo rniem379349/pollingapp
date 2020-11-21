@@ -1,0 +1,30 @@
+{% extends "polls/base.html" %}
+{% load myfilters %}
+
+{% block content %}
+
+    <section class="section">
+        <h2 class="title">{{ profile.username }}'s profile</h2>
+        <h2 class="subtitle">{{ profile.email }}</h2>
+    </section>
+
+    <section class="section">
+        <h2 class="title">{{ profile.username }}'s polls</h2>
+        <div class="columns is-3 is-multiline is-vcentered is-variable">
+            {% if questions %}
+                {% for question, index in questions %}
+                    {% if index %}
+                        <a class="column my-2 is-one-third has-text-centered has-background-light" href="{% url 'polls:detail' question.id %}">{{ question.short_string }}</a>
+                    {% else %}
+                        <a class="column my-2 is-one-third has-text-centered has-background-grey-lighter" href="{% url 'polls:detail' question.id %}">{{ question.short_string }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            <div class="column">
+                <p class="has-text-centered subtitle">No polls are available.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+{% endblock content %}

@@ -3,6 +3,7 @@
 {% block content %}
         <div class="py-2 has-text-centered">
             <a href="{% url 'polls:detail' question.id %}" class="title">{{ question.question_text }}</a>
+            <h4 class="is-size-6">{{ question.when_was_published }}, by <a href="{% url 'users:profile_page' question.user.username %}">{{question.user}}</a></h4>
         </div>
 
         <div class="box">
@@ -31,6 +32,10 @@
                 {% endif %}
             </form>
         <a class="mt-2 button is-info" href="{% url 'polls:results' question.id %}">To results</a>
+        {% if user.is_authenticated %}
+            <a class="mt-2 button is-link" href="{% url 'polls:edit-question' question.id %}">Edit</a>
+            <a class="mt-2 button is-danger" href="{% url 'polls:delete-question' question.id %}">Delete</a>
+        {% endif %}
         </div>
 
 {% endblock content %}
