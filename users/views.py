@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 from django.contrib.auth.models import User
 from polls.models import Question
+from .models import Profile
 # Create your views here.
 
 class RegisterView(generic.FormView):
@@ -19,14 +20,16 @@ class RegisterView(generic.FormView):
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
-        print(form)
         form.save()
+        username = User.objects.filter(username=self.request.POST['username']).first()
+        profile = Profile(user=username)
+        profile.save()
         messages.success(self.request, 'Account registered! You can now log in.')
         return redirect(self.success_url)
     
     def form_invalid(self, form):
         messages.info(self.request, 'Could not register. Please check that the fields are filled out correctly.')
-        return redirect(reverse_lazy('users:register'))
+        return render(self.request, self.template_name, {'form': form})
 
 
 class LoginView(auth_views.LoginView):
@@ -35,7 +38,7 @@ class LoginView(auth_views.LoginView):
     redirect_field_name = reverse_lazy('polls:index')
     
     def form_invalid(self, form, *args, **kwargs):
-        messages.info(self.request, 'Login failed due to incorrect data.')
+        messages.info(self.request, 'Login failed. Please try again.')
         return redirect(reverse_lazy('users:login'))
 
     def form_valid(self, form):
@@ -46,11 +49,11 @@ class LoginView(auth_views.LoginView):
 
 class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
     form_class = UserUpdateForm
-
+    second_form_class = ProfileUpdateForm
     template_name = 'users/profile.html'
 
     def get_queryset(self):
-        return User.objects.filter(pk=self.request.user.pk)
+        return User.objects.filter(pk=self.request.user.pk)   
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -72,7 +75,8 @@ class ProfileView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["profile"] = get_object_or_404(User, username=self.kwargs.get('username'))
+        context["user"] = get_object_or_404(User, username=self.kwargs.get('username'))
+        context["profile"] = Profile.objects.get(user=context['user'])
         print(context)
         return context
     
@@ -87,8 +91,6 @@ class ProfileView(generic.ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        print(self.kwargs.get('username'))
-        print(user)
         qs = Question.objects.filter(user=user)
         indexes = self.get_question_indexes_odd_or_not(qs)
         res = zip(qs, indexes)

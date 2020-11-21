@@ -18,7 +18,6 @@ class IndexView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
         return context
     
     def get_question_indexes_odd_or_not(self, object_list):
@@ -33,7 +32,7 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         qs = Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
         indexes = self.get_question_indexes_odd_or_not(qs)
-        res = zip(qs, indexes)
+        res = list(zip(qs, indexes))
         return res
     
 class DetailView(generic.DetailView):

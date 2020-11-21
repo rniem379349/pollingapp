@@ -25,7 +25,6 @@
                 {% if user.is_authenticated %}
                     <input class="button is-primary" type="submit" value="Vote">
                 {% else %}
-                    <input class="button is-primary" type="submit" value="Vote" disabled>
                     <div class="py-3">
                         <p class="my-2">You need to be logged in to vote. <a class="ml-1 has-color-link" href="{% url 'users:register'%}">Register</a> or <a class="ml-1 has-color-link" href="{% url 'users:login'%}">Log in</a> here.</p>
                     </div>

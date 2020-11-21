@@ -15,12 +15,14 @@
                     <div class="control">
                         {{ form.username|setupinputfield:'Username' }}
                     </div>
+                    {{ form.username.errors }}
                 </div>
                 <div class="field">
                     <label class="label">Email</label>
                     <div class="control">
                         {{ form.email|setupinputfield:'Email' }}
                     </div>
+                    {{ form.email.errors }}
                 </div>
                 <div class="field">
                     <label class="label">Password</label>
@@ -33,6 +35,7 @@
                     <div class="control">
                         {{ form.password2|setupinputfield:'Repeat Password' }}
                     </div>
+                    {{ form.password2.errors }}
                 </div>
             </fieldset>
             <div class="form-group">

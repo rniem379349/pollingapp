@@ -4,12 +4,19 @@
 {% block content %}
 
     <section class="section">
-        <h2 class="title">{{ profile.username }}'s profile</h2>
-        <h2 class="subtitle">{{ profile.email }}</h2>
+        <div class="columns">
+            <div class="column is-one-fifth">
+                <img class="" src="{{ profile.profile_pic.url }}">
+            </div>
+            <div class="column has-text-left">
+                <h2 class="title">{{ user.username }}'s profile</h2>
+                <h2 class="subtitle">{{ user.email }}</h2>
+            </div>
+        </div>
     </section>
 
     <section class="section">
-        <h2 class="title">{{ profile.username }}'s polls</h2>
+        <h2 class="title">{{ user.username }}'s polls</h2>
         <div class="columns is-3 is-multiline is-vcentered is-variable">
             {% if questions %}
                 {% for question, index in questions %}
@@ -21,7 +28,7 @@
                 {% endfor %}
             {% else %}
             <div class="column">
-                <p class="has-text-centered subtitle">No polls are available.</p>
+                <p class="has-text-centered subtitle">No polls from this user yet!</p>
             </div>
             {% endif %}
         </div>
