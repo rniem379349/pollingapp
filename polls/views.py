@@ -110,10 +110,17 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         return True
     
 
-class QuestionEditView(LoginRequiredMixin, generic.UpdateView):
+class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     template_name = 'polls/editquestion.html'
     model = Question
     form_class = QuestionEditForm
+
+    def test_func(self):
+        """
+        function used by the UserPassesTestMixin. Checks if the user is authorized to edit the question
+        """
+        question = self.get_object()
+        return (self.request.user == question.user)
 
     def get_object(self, queryset=None):
         return Question.objects.filter(pk=self.kwargs.get('pk')).first()

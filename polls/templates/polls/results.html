@@ -37,17 +37,24 @@
             <p class="my-2">You need to be logged in to comment. <a class="has-color-link" href="{% url 'users:login'%}">Log in here.</a></p>
         {% endif %}
 
+        <!-- comments section -->
         {% for comment in comments %}
         <div class="box">
-            <div class="columns is-variable">
-                <div class="column is-2-tablet">
-                    <img src="{{ comment.user.profile.profile_pic.url }}" alt="">
+            <article class="media">
+                <div class="media-left">
+                    <figure class="image is-96x96">
+                        <a href="{% url 'users:profile_page' comment.user.username %}">
+                            <img class="is-rounded" src="{{ comment.user.profile.profile_pic.url }}" alt="">
+                        </a>
+                    </figure>
                 </div>
-                <div class="column is-10-tablet">
-                    <h2 class="is-size-6 has-text-weight-bold">{{ comment.user }}</h2>
+                <div class="media-content">
+                    <a href="{% url 'users:profile_page' comment.user.username %}">
+                        <strong>{{ comment.user }}</strong>
+                    </a>
                     <p>{{ comment.content }}</p>
                 </div>
-            </div>
+            </article>
         </div>
         {% endfor %}
     </section>
