@@ -49,9 +49,12 @@
                     </figure>
                 </div>
                 <div class="media-content">
-                    <a href="{% url 'users:profile_page' comment.user.username %}">
-                        <strong>{{ comment.user }}</strong>
-                    </a>
+                    <p class="is-size-7">
+                        <a class="mr-2 is-size-6" href="{% url 'users:profile_page' comment.user.username %}">
+                            <strong>{{ comment.user }}</strong>
+                        </a>
+                        {{ comment.create_when_was_posted_string }}
+                    </p>
                     <p>{{ comment.content }}</p>
                 </div>
             </article>

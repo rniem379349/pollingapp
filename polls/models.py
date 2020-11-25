@@ -4,9 +4,10 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+from pollingapp.mixins import WhenWasObjectCreatedMixin
 
 # Create your models here.
-class Question(models.Model):
+class Question(WhenWasObjectCreatedMixin, models.Model):
     question_text = models.CharField(max_length=200, null=False)
     pub_date = models.DateTimeField('date published')
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
@@ -27,56 +28,14 @@ class Question(models.Model):
                 q_index = index
         return q_index % 2 == 0
 
-    def when_was_published(self):
+    def create_when_was_posted_string(self):
         """
         Return a string saying when a question was published, from minutes up to years
         """
-        now = timezone.now()
-        difference = now - self.pub_date
-        print(difference)
-
-        unit_of_time_str = ""
-        unit_of_time_num = 0
-
-        if (difference.days > 0):
-            if (difference.days == 1):
-                unit_of_time_str = "day"
-                unit_of_time_num = 1
-            elif (1 < difference.days < 7):
-                unit_of_time_str = "days"
-                unit_of_time_num = difference.days
-            elif (7 <= difference.days < 14):
-                unit_of_time_str = "week"
-                unit_of_time_num = difference.days // 7
-            elif (14 <= difference.days < 30):
-                unit_of_time_str = "weeks"
-                unit_of_time_num = difference.days // 7
-            elif (30 <= difference.days < 60):
-                unit_of_time_str = "month"
-                unit_of_time_num = difference.days // 30
-            elif (60 <= difference.days < 365):
-                unit_of_time_str = "months"
-                unit_of_time_num = difference.days // 30
-            elif (365 <= difference.days < 730):
-                unit_of_time_str = "year"
-                unit_of_time_num = difference.days // 365
-            else:
-                unit_of_time_str = "years"
-                unit_of_time_num = difference.days // 365
-        elif (difference.days == 0):
-            if (difference.seconds < 300):
-                return "Posted just now"
-            elif (300 <= difference.seconds < 3600):
-                unit_of_time_str = "minutes"
-                unit_of_time_num = difference.seconds // 60
-            elif (3600 <= difference.seconds < 7200):
-                unit_of_time_str = "hour"
-                unit_of_time_num = difference.seconds // 3600
-            elif (7200 <= difference.seconds < 86400):
-                unit_of_time_str = "hours"
-                unit_of_time_num = difference.seconds // 3600
-            
-        return "Posted %i %s ago" % (unit_of_time_num, unit_of_time_str)
+        when_was_created = self.when_was_created(self.pub_date)
+        if when_was_created == "just now":
+            return "Created %s" % (when_was_created)
+        return "Created %s ago" % (when_was_created)
 
     def was_published_recently(self):
         now = timezone.now()
@@ -105,7 +64,7 @@ class Choice(models.Model):
             return (self.votes / 1) * 100
 
 
-class Comment(models.Model):
+class Comment(WhenWasObjectCreatedMixin, models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -114,3 +73,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content[:11] + '...'
+    
+    def create_when_was_posted_string(self):
+        """
+        Return a string saying when a comment was posted, from minutes up to years
+        """
+        when_was_posted = self.when_was_created(self.date_posted)
+        if when_was_posted == "just now":
+            return "Posted %s" % (when_was_posted)
+        return "Posted %s ago" % (when_was_posted)

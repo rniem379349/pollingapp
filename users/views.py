@@ -71,15 +71,8 @@ class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
         )
     
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        print(request.FILES)
         form = self.form_class(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        print('=================safaef=============')
-        print(profile_form)
-        print(profile_form.is_valid())
-        print(profile_form.errors)
-        print('=================safaef=============')
         if form.is_valid() and profile_form.is_valid():
             profile_form.save()
             return self.form_valid(form)
