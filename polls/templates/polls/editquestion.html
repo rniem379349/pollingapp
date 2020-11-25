@@ -14,17 +14,20 @@
                 <div class="field">
                     <label class="label">Question</label>
                     <div class="control">
-                        {{ form.question_text }}
+                        {{ form.question_text|setupinputfield:'Question text' }}
                     </div>
                 </div>
                 <label class="label">Choices</label>
                 {{ formset.management_form }}
-                {% for form in formset %}
-                    {% comment %} {% if  %} {% endcomment %}
+                {% for q_form in formset %}
                     <div class="field">
                         <div class="control">
-                            {{form.choice_text.content}}
-                            {{ form.as_p }}
+                            {{ q_form.id }}
+                            {{ q_form.choice_text.content }}
+                            {{ q_form.choice_text|setupinputfield:"Choice" }}
+                            {% for q_error in q_form.errors %}
+                                {{ q_error }}
+                            {% endfor %}
                         </div>
                     </div>
                 {% endfor %}

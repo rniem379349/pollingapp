@@ -13,16 +13,16 @@
                 <div class="field">
                     <label class="label">Question</label>
                     <div class="control">
-                        {{ form.question_text }}
+                        {{ form.question_text|setupinputfield:'Question text' }}
                     </div>
                 </div>
                 <div class="field">
-                    <label class="label">Choice</label>
+                    <label class="label">Choices</label>
+                    {{ formset.management_form }}
                     <div class="control">
-                    {% comment %} {% for form in formset %}
-                        {{ form.as_p }}
-                    {% endfor %} {% endcomment %}
-                    {{ formset.as_p }}
+                    {% for q_form in formset %}
+                        {{ q_form.choice_text|setupinputfield:'Choice' }}
+                    {% endfor %}
                     </div>
                 </div>
             </fieldset>
@@ -30,12 +30,6 @@
                 <button class="button" type="submit">Post</button>
             </div>
         </form>
-
-        {% comment %} <div class="border-top pt-3">
-            <small class="text-muted">
-                <a class="ml-2" href="{% url 'polls:results' %}">Register</a>
-            </small>
-        </div> {% endcomment %}
     </section>
 
 {% endblock content %}

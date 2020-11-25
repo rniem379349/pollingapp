@@ -54,8 +54,11 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+        print(form)
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         formset = ChoiceFormSet(queryset=Choice.objects.none())
+        # for form in formset:
+        #     print('formset: ', form.fields)
 
         return self.render_to_response(
             self.get_context_data(
@@ -212,6 +215,7 @@ class ResultsView(generic.DetailView):
     
 
 def vote(request, question_id):
+    print(request.POST)
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
