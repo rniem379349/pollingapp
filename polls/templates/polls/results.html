@@ -1,4 +1,5 @@
 {% extends "polls/base.html" %}
+{% load mptt_tags %}
 
 {% block content %}
     <div class="py-2 has-text-centered">
@@ -38,37 +39,72 @@
         {% endif %}
 
         <!-- comments section -->
-        {% for comment in comments %}
-        <div class="box" id="comment{{ comment.id }}">
+        {% recursetree comments %}
+        <div class="box" id="comment{{ node.id }}">
             <article class="media">
                 <div class="media-left">
                     <figure class="image is-96x96">
-                        <a href="{% url 'users:profile_page' comment.user.username %}">
-                            <img class="is-rounded" src="{{ comment.user.profile.profile_pic.url }}" alt="">
+                        <a href="{% url 'users:profile_page' node.user.username %}">
+                            <img class="is-rounded" src="{{ node.user.profile.profile_pic.url }}" alt="">
                         </a>
                     </figure>
                 </div>
                 <div class="media-content">
                     <div class="content">
                         <p class="is-size-7">
-                            <a class="mr-2 is-size-6" href="{% url 'users:profile_page' comment.user.username %}">
-                                <strong>{{ comment.user }}</strong>
+                            <a class="mr-2 is-size-6" href="{% url 'users:profile_page' node.user.username %}">
+                                <strong>{{ node.user }}</strong>
                             </a>
-                            {{ comment.create_when_was_posted_string }}
-                            {% if comment.responding_to %}
-                            , responding to <a href="#comment{{comment.responding_to.id}}">{{ comment.responding_to.user }}'s post</a>
+                            {{ node.create_when_was_posted_string }}
+                            {% if node.parent %}
+                            , responding to <a href="#comment{{ node.parent.id }}">{{ node.parent.user }}'s post</a>
                             {% endif %}
                         </p>
-                        <p>{{ comment.content }}</p>
+                        <p>{{ node.content }}</p>
                     </div>
                     <nav class="level">
                         <div class="level-left">
-                            <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ comment.id }}">Reply</a>
+                            <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ node.id }}">Reply</a>
                         </div>
                     </nav>
                 </div>
             </article>
+            {% if not node.is_leaf_node %}
+                {% comment %} {% for child in children %} {% endcomment %}
+                {{children}}
+                {% comment %} <div class="box" id="comment{{ child.id }}">
+                    <article class="media">
+                        <div class="media-left">
+                            <figure class="image is-96x96">
+                                <a href="{% url 'users:profile_page' child.user.username %}">
+                                    <img class="is-rounded" src="{{ child.user.profile.profile_pic.url }}" alt="">
+                                </a>
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <p class="is-size-7">
+                                    <a class="mr-2 is-size-6" href="{% url 'users:profile_page' child.user.username %}">
+                                        <strong>{{ child.user }}</strong>
+                                    </a>
+                                    {{ child.create_when_was_posted_string }}
+                                    {% if child.parent %}
+                                    , responding to <a href="#comment{{ child.parent.id }}">{{ child.parent.user }}'s post</a>
+                                    {% endif %}
+                                </p>
+                                <p>{{ child.content }}</p>
+                            </div>
+                            <nav class="level">
+                                <div class="level-left">
+                                    <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ child.parent.id }}">Reply</a>
+                                </div>
+                            </nav>
+                        </div>
+                    </article>
+                </div> {% endcomment %}
+                {% comment %} {% endfor %} {% endcomment %}
+            {% endif %}
         </div>
-        {% endfor %}
+        {% endrecursetree %}
     </section>
 {% endblock content %}

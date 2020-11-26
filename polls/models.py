@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from mptt.models import MPTTModel, TreeForeignKey
 
 from pollingapp.mixins import WhenWasObjectCreatedMixin
 
@@ -64,13 +65,16 @@ class Choice(models.Model):
             return (self.votes / 1) * 100
 
 
-class Comment(WhenWasObjectCreatedMixin, models.Model):
+class Comment(WhenWasObjectCreatedMixin, MPTTModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    responding_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, default=None)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None, related_name='children')
 
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now())
+    
+    class MPTTMeta:
+        order_insertion_by = ['date_posted']
 
     def __str__(self):
         return self.content[:11] + '...'
