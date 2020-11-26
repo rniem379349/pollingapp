@@ -25,9 +25,12 @@
                             {{ q_form.id }}
                             {{ q_form.choice_text.content }}
                             {{ q_form.choice_text|setupinputfield:"Choice" }}
-                            {% for q_error in q_form.errors %}
-                                {{ q_error }}
-                            {% endfor %}
+                            {{ q_form.errors.choice_text }}
+                            {% comment %} {% if q_form.errors %}
+                                {% for q_err in q_form.errors %}
+                                    {{ q_err.as_p }}
+                                {% endfor %}
+                            {% endif %} {% endcomment %}
                         </div>
                     </div>
                 {% endfor %}

@@ -32,7 +32,8 @@
             {% endif %}
         </form>
     <a class="mt-2 button is-info" href="{% url 'polls:results' question.id %}">To results</a>
-    {% if user.is_authenticated %}
+
+    {% if object.user == user %}
         <a class="mt-2 button is-link" href="{% url 'polls:edit-question' question.id %}">Edit</a>
         <a class="mt-2 button is-danger" href="{% url 'polls:delete-question' question.id %}">Delete</a>
     {% endif %}

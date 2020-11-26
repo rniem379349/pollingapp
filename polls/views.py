@@ -173,8 +173,9 @@ class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
                         Choice.objects.create(votes=0, question=self.get_object(), choice_text=form.cleaned_data['choice_text'])
 
         except Exception:
+            print('exc')
             traceback.print_exc()
-            messages.info(self.request, 'Could not update question.')
+            messages.error(self.request, 'Could not update question.')
             return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
 
         messages.success(self.request, 'Question updated successfully!')
@@ -182,8 +183,9 @@ class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
         return HttpResponseRedirect(reverse('polls:detail', args=(question_id,)))
     
     def form_invalid(self, form, formset):
+        print('invalid')
         question_id = self.kwargs.get('pk')
-        messages.info(self.request, 'Could not update question.')
+        messages.error(self.request, 'Could not update question. Remember that existing choices cannot be removed.')
         return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
 
 
