@@ -71,7 +71,7 @@ class Comment(WhenWasObjectCreatedMixin, MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None, related_name='children')
 
     content = models.TextField()
-    date_posted = models.DateTimeField(default=timezone.now())
+    date_posted = models.DateTimeField(default=timezone.now)
     
     class MPTTMeta:
         order_insertion_by = ['date_posted']
@@ -81,7 +81,8 @@ class Comment(WhenWasObjectCreatedMixin, MPTTModel):
     
     def create_when_was_posted_string(self):
         """
-        Return a string saying when a comment was posted, from minutes up to years
+        Return a string saying when a comment was posted, from minutes up to years.
+        Uses WhenWasObjectCreatedMixin.
         """
         when_was_posted = self.when_was_created(self.date_posted)
         if when_was_posted == "just now":
