@@ -173,7 +173,6 @@ class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
                         Choice.objects.create(votes=0, question=self.get_object(), choice_text=form.cleaned_data['choice_text'])
 
         except Exception:
-            print('exc')
             traceback.print_exc()
             messages.error(self.request, 'Could not update question.')
             return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
@@ -183,7 +182,6 @@ class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
         return HttpResponseRedirect(reverse('polls:detail', args=(question_id,)))
     
     def form_invalid(self, form, formset):
-        print('invalid')
         question_id = self.kwargs.get('pk')
         messages.error(self.request, 'Could not update question. Remember that existing choices cannot be removed.')
         return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
@@ -250,7 +248,13 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'polls/comment.html'
 
     def form_valid(self, form):
+        print(form)
         form.instance.user = self.request.user
         question_id = self.kwargs.get('question_id')
-        Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, content=form.cleaned_data['content'])
+        responding_to = self.request.GET.get('reply_to')
+        if responding_to:
+            Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, responding_to=Comment.objects.get(pk=responding_to), content=form.cleaned_data['content'])
+        else:
+            Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, content=form.cleaned_data['content'])
+
         return HttpResponseRedirect(reverse('polls:results', args=(question_id,)))

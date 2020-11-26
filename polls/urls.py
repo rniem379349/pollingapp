@@ -14,4 +14,5 @@ urlpatterns = [
     path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     path('<int:question_id>/vote/', views.vote, name='vote'),
     path('<int:question_id>/comment/', views.CommentCreateView.as_view(), name='create-comment'),
+    # path('<int:question_id>/<int:comment_id>/comment/', views.CommentCreateView.as_view(), name='create-reply'),
 ]

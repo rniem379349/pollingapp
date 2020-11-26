@@ -39,7 +39,7 @@
 
         <!-- comments section -->
         {% for comment in comments %}
-        <div class="box">
+        <div class="box" id="comment{{ comment.id }}">
             <article class="media">
                 <div class="media-left">
                     <figure class="image is-96x96">
@@ -49,13 +49,23 @@
                     </figure>
                 </div>
                 <div class="media-content">
-                    <p class="is-size-7">
-                        <a class="mr-2 is-size-6" href="{% url 'users:profile_page' comment.user.username %}">
-                            <strong>{{ comment.user }}</strong>
-                        </a>
-                        {{ comment.create_when_was_posted_string }}
-                    </p>
-                    <p>{{ comment.content }}</p>
+                    <div class="content">
+                        <p class="is-size-7">
+                            <a class="mr-2 is-size-6" href="{% url 'users:profile_page' comment.user.username %}">
+                                <strong>{{ comment.user }}</strong>
+                            </a>
+                            {{ comment.create_when_was_posted_string }}
+                            {% if comment.responding_to %}
+                            , responding to <a href="#comment{{comment.responding_to.id}}">{{ comment.responding_to.user }}'s post</a>
+                            {% endif %}
+                        </p>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                    <nav class="level">
+                        <div class="level-left">
+                            <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ comment.id }}">Reply</a>
+                        </div>
+                    </nav>
                 </div>
             </article>
         </div>

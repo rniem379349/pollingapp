@@ -15,6 +15,7 @@
                     <label class="label">Question</label>
                     <div class="control">
                         {{ form.question_text|setupinputfield:'Question text' }}
+                        {{ form.question_text.errors }}
                     </div>
                 </div>
                 <label class="label">Choices</label>
@@ -25,12 +26,8 @@
                             {{ q_form.id }}
                             {{ q_form.choice_text.content }}
                             {{ q_form.choice_text|setupinputfield:"Choice" }}
-                            {{ q_form.errors.choice_text }}
-                            {% comment %} {% if q_form.errors %}
-                                {% for q_err in q_form.errors %}
-                                    {{ q_err.as_p }}
-                                {% endfor %}
-                            {% endif %} {% endcomment %}
+                            {{ q_form.choice_text.errors }}
+                            {{ q_form.id.errors }}
                         </div>
                     </div>
                 {% endfor %}

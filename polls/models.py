@@ -67,6 +67,7 @@ class Choice(models.Model):
 class Comment(WhenWasObjectCreatedMixin, models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    responding_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, default=None)
 
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now())
