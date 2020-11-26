@@ -253,7 +253,7 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
         question_id = self.kwargs.get('question_id')
         responding_to = self.request.GET.get('reply_to')
         if responding_to:
-            Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, responding_to=Comment.objects.get(pk=responding_to), content=form.cleaned_data['content'])
+            Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, parent=Comment.objects.get(pk=responding_to), content=form.cleaned_data['content'])
         else:
             Comment.objects.create(question=Question.objects.get(pk=question_id), user=self.request.user, content=form.cleaned_data['content'])
 
