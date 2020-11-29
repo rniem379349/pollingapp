@@ -10,10 +10,15 @@
                 <legend class='subtitle mb-4'>
                     Create a new poll
                 </legend>
+                {{ form.media }}
                 <div class="field">
                     <label class="label">Question</label>
                     <div class="control">
                         {{ form.question_text|setupinputfield:'Question text' }}
+                    </div>
+                    <label class="label">Ends on: <p class="is-size-7">(If you want this poll to run indefinitely, just leave this field empty)</p></label>
+                    <div class="control">
+                        {{ form.ends_on }}
                     </div>
                 </div>
                 <div class="field">

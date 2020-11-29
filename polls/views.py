@@ -38,9 +38,10 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
+
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
-    
+
 
 class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'polls/newquestion.html'
@@ -54,11 +55,8 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        print(form)
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         formset = ChoiceFormSet(queryset=Choice.objects.none())
-        # for form in formset:
-        #     print('formset: ', form.fields)
 
         return self.render_to_response(
             self.get_context_data(
@@ -74,6 +72,7 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         """
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         form = self.get_form()
+        print("FOOM: ", form)
         formset = ChoiceFormSet(self.request.POST)
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
@@ -87,7 +86,7 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
                 messages.info(self.request, 'Please provide at least two choices.')
                 return HttpResponseRedirect(reverse('polls:create-question'))
 
-            q = Question.objects.create(question_text=form.cleaned_data['question_text'], pub_date=timezone.now(), user=self.request.user)
+            q = Question.objects.create(question_text=form.cleaned_data['question_text'], pub_date=timezone.now(), ends_on=form.cleaned_data['ends_on'], user=self.request.user)
 
             for form in formset.cleaned_data:
                 if form.get('choice_text'):
@@ -215,7 +214,6 @@ class ResultsView(generic.DetailView):
     
 
 def vote(request, question_id):
-    print(request.POST)
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])

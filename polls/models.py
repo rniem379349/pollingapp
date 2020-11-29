@@ -12,6 +12,7 @@ class Question(WhenWasObjectCreatedMixin, models.Model):
     question_text = models.CharField(max_length=200, null=False)
     pub_date = models.DateTimeField('date published')
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    ends_on = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.question_text
@@ -41,6 +42,13 @@ class Question(WhenWasObjectCreatedMixin, models.Model):
     def was_published_recently(self):
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
+    
+    def has_ended(self):
+        if not self.ends_on:
+            return False
+        now = timezone.now()
+        difference = (self.ends_on - now).total_seconds()
+        return True if difference < 0 else False
 
     def total_votes(self):
         choices = self.choice_set.all()
