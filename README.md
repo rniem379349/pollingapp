@@ -17,5 +17,4 @@ To run this app, perform the following steps:
 
 ## Future Work
 Future updates are to follow. Currently in development:
-- User profile picture upload and cropping,
 - Further styling and animations.
