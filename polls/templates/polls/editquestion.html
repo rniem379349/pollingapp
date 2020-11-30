@@ -10,7 +10,7 @@
                 <legend class='subtitle mb-4'>
                     Edit poll
                 </legend>
-                <p class="subtitle is-size-6">Edit your poll here!</p>
+                <p class="subtitle is-size-6">Edit your poll here. Please note that the duration cannot be edited.</p>
                 <div class="field">
                     <label class="label">Question</label>
                     <div class="control">
@@ -23,11 +23,8 @@
                 {% for q_form in formset %}
                     <div class="field">
                         <div class="control">
-                            {{ q_form.id }}
-                            {{ q_form.choice_text.content }}
                             {{ q_form.choice_text|setupinputfield:"Choice" }}
                             {{ q_form.choice_text.errors }}
-                            {{ q_form.id.errors }}
                         </div>
                     </div>
                 {% endfor %}

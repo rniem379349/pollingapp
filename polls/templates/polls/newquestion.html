@@ -20,16 +20,17 @@
                     <div class="control">
                         {{ form.ends_on }}
                     </div>
+                    <p class="has-text-danger-dark">{{ form.ends_on.errors.as_text }}</p>
                 </div>
+                <label class="label">Choices</label>
+                {{ formset.management_form }}
+                {% for q_form in formset %}
                 <div class="field">
-                    <label class="label">Choices</label>
-                    {{ formset.management_form }}
                     <div class="control">
-                    {% for q_form in formset %}
                         {{ q_form.choice_text|setupinputfield:'Choice' }}
-                    {% endfor %}
                     </div>
                 </div>
+                {% endfor %}
             </fieldset>
             <div class="form-group">
                 <button class="button" type="submit">Post</button>

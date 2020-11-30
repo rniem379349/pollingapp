@@ -55,6 +55,7 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         formset = ChoiceFormSet(queryset=Choice.objects.none())
 
@@ -72,12 +73,11 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         """
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         form = self.get_form()
-        print("FOOM: ", form)
         formset = ChoiceFormSet(self.request.POST)
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
         else:
-            return self.form_invalid(form)
+            return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
         try:
@@ -97,6 +97,12 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
             return HttpResponseRedirect(reverse('polls:new-question'))
         messages.success(self.request, 'Question added successfully!')
         return HttpResponseRedirect(reverse('polls:index'))
+    
+    def form_invalid(self, form, formset):
+        print(form.errors)
+        messages.error(self.request, 'Could not create poll.')
+        return render(self.request, self.template_name, {'form': form, 'formset': formset})
+        # return HttpResponseRedirect(reverse('polls:create-question'), {'form': form})
     
     def less_than_two_choices(self, formset):
         """
