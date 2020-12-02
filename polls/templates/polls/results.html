@@ -35,7 +35,7 @@
         {% if user.is_authenticated %}
         <a class="button my-2" href="{% url 'polls:create-comment' question.id %}">Post a comment</a>
         {% else %}
-            <p class="my-2">You need to be logged in to comment. <a class="has-color-link" href="{% url 'users:login'%}">Log in here.</a></p>
+            <p class="my-2">You need to be logged in to comment. <a class="has-color-link" href="{% url 'users:login'%}?next={% url 'polls:create-comment' question.id %}">Log in here.</a></p>
         {% endif %}
 
         <!-- comments section -->
@@ -68,7 +68,7 @@
                             {% if user.is_authenticated %}
                                 <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ node.id }}">Reply</a>
                             {% else %}
-                                <a class="button is-small" href="{% url 'users:login' %}">Log in to reply</a>
+                                <a class="button is-small" href="{% url 'users:login' %}?next={% url 'polls:create-comment' question.id %}?reply_to={{ node.id }}">Log in to reply</a>
                             {% endif %}
                         </div>
                     </nav>
