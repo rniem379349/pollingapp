@@ -5,6 +5,9 @@
     <div class="py-2 has-text-centered">
         <a href="{% url 'polls:detail' question.id %}" class="title">{{ question.question_text }}</a>
         <h4 class="is-size-6">{{ question.create_when_was_posted_string }}, by <a href="{% url 'users:profile_page' question.user.username %}">{{question.user}}</a></h4>
+        {% if question.ends_on %}
+            <h4 class="is-size-6">{{ question.create_ends_on_string }}</h4>
+        {% endif %}
     </div>
 
     <div class="box">
@@ -23,12 +26,18 @@
                     </div>
                 </div>
             {% endfor %}
-            {% if user.is_authenticated %}
-                <input class="button is-primary" type="submit" value="Vote">
-            {% else %}
+            {% if question.has_ended %}
                 <div class="py-3">
-                    <p class="my-2">You need to be logged in to vote. <a class="ml-1 has-color-link" href="{% url 'users:register'%}">Register</a> or <a class="ml-1 has-color-link" href="{% url 'users:login'%}">Log in</a> here.</p>
+                    <p class="my-2">This poll has ended, voting is no longer possible.</p>
                 </div>
+            {% else %}
+                {% if user.is_authenticated %}
+                    <input class="button is-primary" type="submit" value="Vote">
+                {% else %}
+                    <div class="py-3">
+                        <p class="my-2">You need to be logged in to vote. <a class="ml-1 has-color-link" href="{% url 'users:register'%}">Register</a> or <a class="ml-1 has-color-link" href="{% url 'users:login'%}">Log in</a> here.</p>
+                    </div>
+                {% endif %}
             {% endif %}
         </form>
     <a class="mt-2 button is-info" href="{% url 'polls:results' question.id %}">To results</a>

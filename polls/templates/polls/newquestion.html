@@ -10,21 +10,27 @@
                 <legend class='subtitle mb-4'>
                     Create a new poll
                 </legend>
+                {{ form.media }}
                 <div class="field">
                     <label class="label">Question</label>
                     <div class="control">
                         {{ form.question_text|setupinputfield:'Question text' }}
                     </div>
-                </div>
-                <div class="field">
-                    <label class="label">Choices</label>
-                    {{ formset.management_form }}
+                    <label class="label">Ends on: <p class="is-size-7">(If you want this poll to run indefinitely, just leave this field empty)</p></label>
                     <div class="control">
-                    {% for q_form in formset %}
+                        {{ form.ends_on }}
+                    </div>
+                    <p class="has-text-danger-dark">{{ form.ends_on.errors.as_text }}</p>
+                </div>
+                <label class="label">Choices</label>
+                {{ formset.management_form }}
+                {% for q_form in formset %}
+                <div class="field">
+                    <div class="control">
                         {{ q_form.choice_text|setupinputfield:'Choice' }}
-                    {% endfor %}
                     </div>
                 </div>
+                {% endfor %}
             </fieldset>
             <div class="form-group">
                 <button class="button" type="submit">Post</button>
