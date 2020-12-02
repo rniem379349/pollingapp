@@ -46,10 +46,8 @@ class Question(WhenWasObjectCreatedMixin, models.Model):
         if not self.ends_on:
             return ""
         if self.has_ended():
-            # return self.ends_on
             return "Ended on: " + self.ends_on.strftime("%d.%m.%Y, %H:%M")
         else:
-            # return self.ends_on
             return "Ends on: " + self.ends_on.strftime("%d.%m.%Y, %H:%M")
 
     def was_published_recently(self):

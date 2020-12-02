@@ -62,11 +62,17 @@
                         </p>
                         <p>{{ node.content }}</p>
                     </div>
+                    {% if node.level < 3 %}
                     <nav class="level">
                         <div class="level-left">
-                            <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ node.id }}">Reply</a>
+                            {% if user.is_authenticated %}
+                                <a class="button is-small" href="{% url 'polls:create-comment' question.id %}?reply_to={{ node.id }}">Reply</a>
+                            {% else %}
+                                <a class="button is-small" href="{% url 'users:login' %}">Log in to reply</a>
+                            {% endif %}
                         </div>
                     </nav>
+                    {% endif %}
                 </div>
             </article>
             {% if not node.is_leaf_node %}
