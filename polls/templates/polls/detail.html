@@ -5,6 +5,9 @@
     <div class="py-2 has-text-centered">
         <a href="{% url 'polls:detail' question.id %}" class="title">{{ question.question_text }}</a>
         <h4 class="is-size-6">{{ question.create_when_was_posted_string }}, by <a href="{% url 'users:profile_page' question.user.username %}">{{question.user}}</a></h4>
+        {% if question.ends_on %}
+            <h4 class="is-size-6">{{ question.create_ends_on_string }}</h4>
+        {% endif %}
     </div>
 
     <div class="box">

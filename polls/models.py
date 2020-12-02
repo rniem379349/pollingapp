@@ -38,6 +38,19 @@ class Question(WhenWasObjectCreatedMixin, models.Model):
         if when_was_created == "just now":
             return "Created %s" % (when_was_created)
         return "Created %s ago" % (when_was_created)
+    
+    def create_ends_on_string(self):
+        """
+        Return a string for letting users know when a given question's voting period ends.
+        """
+        if not self.ends_on:
+            return ""
+        if self.has_ended():
+            # return self.ends_on
+            return "Ended on: " + self.ends_on.strftime("%d.%m.%Y, %H:%M")
+        else:
+            # return self.ends_on
+            return "Ends on: " + self.ends_on.strftime("%d.%m.%Y, %H:%M")
 
     def was_published_recently(self):
         now = timezone.now()

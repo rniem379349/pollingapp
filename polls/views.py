@@ -73,10 +73,14 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         """
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         form = self.get_form()
+        print(form)
+        print(form.cleaned_data)
         formset = ChoiceFormSet(self.request.POST)
         if form.is_valid() and formset.is_valid():
+            print("valid")
             return self.form_valid(form, formset)
         else:
+            print("not valid")
             return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
@@ -227,6 +231,7 @@ def vote(request, question_id):
         # Redisplay the question voting form.
         return render(request, 'polls/detail.html', {
             'question': question,
+            'object': question,
             'error_message': "You didn't select a choice.",
         })
     else:
