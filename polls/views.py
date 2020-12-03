@@ -9,7 +9,7 @@ from django.views import generic
 from django.utils import timezone
 from django.forms.models import modelformset_factory
 
-from .models import Question, Choice, Comment
+from .models import Question, Choice, Vote, Comment
 from .forms import QuestionCreationForm, QuestionEditForm, ChoiceCreationForm, ChoiceEditForm
 
 class IndexView(generic.ListView):
@@ -41,6 +41,19 @@ class DetailView(generic.DetailView):
 
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
+    
+    def check_if_user_voted(self, request):
+        if request.user:
+            if Vote.objects.filter(user=request.user, question=self.get_object()).exists():
+                return True
+        return False
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        context["user_has_voted"] = self.check_if_user_voted(self.request)
+        print(context)
+        return context
+    
 
 
 class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
@@ -237,6 +250,7 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
+        Vote.objects.create(user=request.user, question=question)
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.

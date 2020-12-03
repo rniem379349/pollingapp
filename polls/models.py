@@ -84,6 +84,11 @@ class Choice(models.Model):
             return (self.votes / 1) * 100
 
 
+class Vote(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+
 class Comment(WhenWasObjectCreatedMixin, MPTTModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -32,7 +32,11 @@
                 </div>
             {% else %}
                 {% if user.is_authenticated %}
-                    <input class="button is-primary" type="submit" value="Vote">
+                    {% if user_has_voted %}
+                        <p class="my-2">You have already voted on this poll.</p>
+                    {% else %}
+                        <input class="button is-primary" type="submit" value="Vote">
+                    {% endif %}
                 {% else %}
                     <div class="py-3">
                         <p class="my-2">You need to be logged in to vote. <a class="ml-1 has-color-link" href="{% url 'users:register'%}?next={% firstof request.path '/' %}">Register</a> or <a class="ml-1 has-color-link" href="{% url 'users:login'%}?next={% firstof request.path '/' %}">Log in</a> here.</p>
