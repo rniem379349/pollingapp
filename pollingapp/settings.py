@@ -128,3 +128,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = 'polls:index'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 8025
+EMAIL_USE_TLS = False

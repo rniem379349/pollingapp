@@ -43,7 +43,7 @@ class DetailView(generic.DetailView):
         return Question.objects.filter(pub_date__lte=timezone.now())
     
     def check_if_user_voted(self, request):
-        if request.user:
+        if request.user.is_authenticated:
             if Vote.objects.filter(user=request.user, question=self.get_object()).exists():
                 return True
         return False

@@ -45,9 +45,11 @@ class LoginView(auth_views.LoginView):
         messages.success(self.request, 'Logged in. Welcome, %s!' % self.request.POST['username'])
         super().form_valid(form)
         # redirect to next url if user clicked on log in button to perform some specific action and we want a specific redirect
-        if self.request.GET['next']:
-            return redirect(self.request.GET['next'])
-        return redirect(self.redirect_field_name)
+        try:
+            if self.request.GET['next']:
+                return redirect(self.request.GET['next'])
+        except KeyError:
+            return redirect(self.redirect_field_name)
 
 
 class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
