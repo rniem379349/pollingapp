@@ -8,9 +8,22 @@ In addition to the functionality of voting on polls, this polling app includes:
 - A threaded comment system for each poll,
 - Visual styling using Javascript and Bulma CSS (https://bulma.io/).
 
+## Preview
+### Overall functionality
+![previewgif](/screenshots/awsumpolls.gif)
+### Home screen
+![home](/screenshots/homescreen.png)
+### Voting view
+![voting](/screenshots/votingview.png)
+### Home screen
+![results](/screenshots/results.png)
+### Create polls
+![createpoll](/screenshots/createpoll.png)
+
 ## Requirements
 
 Python: 3.8.1 <
+Django: 3.1.2 <
 
 Plus all the packages for Python, as specified in `requirements.txt`
 
@@ -30,7 +43,3 @@ To make sure the password reset email works:
 From there you can copy the reset link and continue in the webapp.
 
 An alternative to this is to set up your own email server remotely, e.g. using Gmail. More info here: (https://www.lifewire.com/get-a-password-to-access-gmail-by-pop-imap-2-1171882). Note that this will require some tinkering with the `settings.py` file in the main Django application folder.
-
-## Future Work
-Future updates are to follow. Currently in development:
-- Further styling and animations.
