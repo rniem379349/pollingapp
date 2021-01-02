@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 import environ
+import secrets
 
 environ.Env.read_env()
 
@@ -155,9 +156,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://rniem-awsumpolls.herokuapp.com",
 ]
 
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+AWS_ACCESS_KEY_ID = secrets.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = secrets.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = secrets.AWS_STORAGE_BUCKET_NAME
 
 
 AWS_S3_FILE_OVERWRITE = False
