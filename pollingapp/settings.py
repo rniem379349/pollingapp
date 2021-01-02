@@ -93,11 +93,16 @@ WSGI_APPLICATION = 'pollingapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd218trj15s78p8',
+        'HOST': 'ec2-3-91-139-25.compute-1.amazonaws.com',
+        'PORT': 5432,
+        'USER': 'kprrclquxsbjhg',
+        'PASSWORD': 'ad4b71d96f9f5541f45cd8204592c26d09e70a0abfe418403f77ef802a4be5f4',
     }
 }
 
+# postgres://kprrclquxsbjhg:ad4b71d96f9f5541f45cd8204592c26d09e70a0abfe418403f77ef802a4be5f4@ec2-3-91-139-25.compute-1.amazonaws.com:5432/d218trj15s78p8
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
