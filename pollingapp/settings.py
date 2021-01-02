@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 import environ
-import secrets
+from .secret_settings import *
 
 environ.Env.read_env()
 
@@ -146,20 +146,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# media files using AWS S3
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL = '/media/'
-
+# CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1",
     "http://localhost",
     "https://rniem-awsumpolls.herokuapp.com",
 ]
 
-AWS_ACCESS_KEY_ID = secrets.AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY = secrets.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = secrets.AWS_STORAGE_BUCKET_NAME
+# media files using AWS S3
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
+AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None

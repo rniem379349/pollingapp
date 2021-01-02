@@ -93,4 +93,4 @@ media/
 
 # secret key files
 pollingapp/.env
-secrets.py
+secret_settings.py
