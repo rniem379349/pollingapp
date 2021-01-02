@@ -90,3 +90,6 @@ db.sqlite3
 
 # static files
 media/
+
+# secret key file
+pollingapp/.env
