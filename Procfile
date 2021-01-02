@@ -1,1 +1,1 @@
-web: waitress-serve --port=8000 pollingapp.wsgi:application
+web: waitress-serve --port=$PORT pollingapp.wsgi:application
