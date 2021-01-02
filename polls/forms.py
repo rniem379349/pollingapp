@@ -20,11 +20,13 @@ class QuestionCreationForm(forms.ModelForm):
         now = timezone.now()
         print("ts:", timestamp)
         print("now:",now)
-        print(timestamp < now + timezone.timedelta(hours=2))
-        if timestamp < now + timezone.timedelta(hours=2):
-            raise ValidationError("The minimum duration of a poll is two hours.")
+        if timestamp:
+            print(timestamp < now + timezone.timedelta(hours=2))
+            if timestamp < now + timezone.timedelta(hours=2):
+                raise ValidationError("The minimum duration of a poll is two hours.")
         
-        return timestamp
+            return timestamp
+        return None
 
 
 class QuestionEditForm(forms.ModelForm):
