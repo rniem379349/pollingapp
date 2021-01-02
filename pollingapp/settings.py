@@ -30,7 +30,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'rniem-awsumpolls.herokuapp.com']
+ALLOWED_HOSTS = ['rniem-awsumpolls.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -159,6 +159,8 @@ MEDIA_URL = '/media/'
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWSUMPOLLS_AWS_STORAGE_BUCKET_NAME')
+AWS_BUCKET_NAME = os.environ.get('AWSUMPOLLS_AWS_STORAGE_BUCKET_NAME')
+S3_BUCKET_NAME = os.environ.get('AWSUMPOLLS_AWS_STORAGE_BUCKET_NAME')
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
