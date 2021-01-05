@@ -1,6 +1,9 @@
 # pollingapp
 This is a Django project, which expands on Django's official 'polling app' tutorial (https://docs.djangoproject.com/en/3.1/intro/tutorial01/).
 
+## Hosted demo
+https://rniem-awsumpolls.herokuapp.com/
+
 ## Functionality
 In addition to the functionality of voting on polls, this polling app includes:
 - A user profile and authentication system (only authenticated users can create polls and vote),
