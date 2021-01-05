@@ -24,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -92,14 +91,17 @@ WSGI_APPLICATION = 'pollingapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+DB_USER = os.environ['DATABASE_USER']
+DB_PASSWORD = os.environ['DATABASE_PASSWORD']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'd218trj15s78p8',
         'HOST': 'ec2-3-91-139-25.compute-1.amazonaws.com',
         'PORT': 5432,
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
     }
 }
 
