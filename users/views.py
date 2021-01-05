@@ -94,27 +94,6 @@ class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
 
 
-# class ProfileEditView(generic.UpdateView, LoginRequiredMixin):
-#     form_class = UserUpdateForm
-#     second_form_class = ProfileUpdateForm
-#     template_name = 'users/profile.html'
-
-#     def get_queryset(self):
-#         return User.objects.filter(pk=self.request.user.pk)   
-
-#     def get(self, request, *args, **kwargs):
-#         return super().get(request, *args, **kwargs)
-    
-#     def form_valid(self, form):
-#         form.save()
-#         messages.success(self.request, 'Changes saved.')
-#         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
-    
-#     def form_invalid(self, form):
-#         messages.info(self.request, 'Could not save changes. Please check that the fields are filled out correctly.')
-#         return redirect(reverse_lazy('users:user_profile', kwargs={'pk':self.request.user.pk}))
-
-
 class ProfileView(generic.ListView):
     model = Question
     template_name = 'users/profile_page.html'
@@ -122,9 +101,8 @@ class ProfileView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user"] = get_object_or_404(User, username=self.kwargs.get('username'))
-        context["profile"] = Profile.objects.get(user=context['user'])
-        print(context)
+        context["profile_user"] = get_object_or_404(User, username=self.kwargs.get('username'))
+        context["profile"] = Profile.objects.get(user=context['profile_user'])
         return context
     
     def get_question_indexes_odd_or_not(self, object_list):

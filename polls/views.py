@@ -51,7 +51,6 @@ class DetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         context["user_has_voted"] = self.check_if_user_voted(self.request)
-        print(context)
         return context
     
 
@@ -86,14 +85,10 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
         """
         ChoiceFormSet = modelformset_factory(Choice, form=ChoiceCreationForm, extra=10, max_num=10)
         form = self.get_form()
-        print(form)
-        print(form.cleaned_data)
         formset = ChoiceFormSet(self.request.POST)
         if form.is_valid() and formset.is_valid():
-            print("valid")
             return self.form_valid(form, formset)
         else:
-            print("not valid")
             return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
@@ -109,14 +104,13 @@ class QuestionCreateView(LoginRequiredMixin, generic.CreateView):
                 if form.get('choice_text'):
                     Choice.objects.create(votes=0, question=q, choice_text=form['choice_text'])
         except Exception:
-            traceback.print_exc()
+            # traceback.print_exc()
             messages.info(self.request, 'Could not create question.')
             return HttpResponseRedirect(reverse('polls:new-question'))
         messages.success(self.request, 'Question added successfully!')
         return HttpResponseRedirect(reverse('polls:index'))
     
     def form_invalid(self, form, formset):
-        print(form.errors)
         messages.error(self.request, 'Could not create poll.')
         return render(self.request, self.template_name, {'form': form, 'formset': formset})
         # return HttpResponseRedirect(reverse('polls:create-question'), {'form': form})
@@ -195,7 +189,7 @@ class QuestionEditView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
                         Choice.objects.create(votes=0, question=self.get_object(), choice_text=form.cleaned_data['choice_text'])
 
         except Exception:
-            traceback.print_exc()
+            # traceback.print_exc()
             messages.error(self.request, 'Could not update question.')
             return HttpResponseRedirect(reverse('polls:edit-question', args=(question_id,)))
 
@@ -271,7 +265,6 @@ class CommentCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'polls/comment.html'
 
     def form_valid(self, form):
-        print(form)
         form.instance.user = self.request.user
         question_id = self.kwargs.get('question_id')
         responding_to = self.request.GET.get('reply_to')

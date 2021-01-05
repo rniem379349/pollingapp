@@ -18,10 +18,7 @@ class QuestionCreationForm(forms.ModelForm):
     def clean_ends_on(self):
         timestamp = self.cleaned_data['ends_on']
         now = timezone.now()
-        print("ts:", timestamp)
-        print("now:",now)
         if timestamp:
-            print(timestamp < now + timezone.timedelta(hours=2))
             if timestamp < now + timezone.timedelta(hours=2):
                 raise ValidationError("The minimum duration of a poll is two hours.")
         
